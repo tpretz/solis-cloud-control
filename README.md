@@ -4,7 +4,7 @@ This is very initial version of the Solis Cloud Control API integration for Home
 It allows you to read and control various settings of your Solis inverter.
 Doesn't support sensors, switches, or other entities yet - only basic read and control actions crafted for automations.
 
-See [issue tracker](https://github.com/mkuthan/solis-cloud-control) for further plans.
+See [issue tracker](https://github.com/mkuthan/solis-cloud-control/issues) for further plans.
 
 ## Read Inverter Settings
 
