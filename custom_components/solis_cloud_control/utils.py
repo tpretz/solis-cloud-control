@@ -8,8 +8,12 @@ def digest(body: str) -> str:
     return base64.b64encode(hashlib.md5(body.encode("utf-8")).digest()).decode("utf-8")
 
 
-def current_date() -> str:
-    return datetime.now(UTC).strftime("%a, %d %b %Y %H:%M:%S GMT")
+def current_date() -> datetime:
+    return datetime.now(UTC)
+
+
+def format_date(date: datetime) -> str:
+    return date.strftime("%a, %d %b %Y %H:%M:%S GMT")
 
 
 def sign_authorization(key: str, message: str) -> str:
