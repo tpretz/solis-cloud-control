@@ -114,11 +114,10 @@ class SolisCloudControlApiClient:
         if "msg" not in data:
             raise SolisCloudControlApiError("Read failed: 'msg' field is missing in response")
 
-        fetch_payload = { orderId: data["msg"] }
+        fetch_payload = { "orderId": data["msg"] }
         count=0
         while count < 10:
             count += 1
-            await asyncio.sleep(5)
 
             fetch = await self._request(date, FETCH_ENDPOINT, fetch_payload)
             if data is None:
@@ -126,9 +125,11 @@ class SolisCloudControlApiClient:
             if len(data) is not 1:
                 raise SolisCloudControlApiError("Read failed: 'data' unexpected length")
 
-            if "value" not in data[0]
-                raise SolisCloudControlApiError("Read failed: 'value' missing")
-            return data[0]['value']
+            if "needLoop" in data and data["needLoop"] is false:
+                if "value" not in data:
+                    raise SolisCloudControlApiError("Read failed: 'value' missing")
+                return data['value']
+            await asyncio.sleep(1)
 
 
 
