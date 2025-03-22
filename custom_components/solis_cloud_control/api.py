@@ -123,7 +123,7 @@ class SolisCloudControlApiClient:
             if data is None:
                 raise SolisCloudControlApiError("Read failed: 'data' field is missing in response")
 
-            if "needLoop" in data and data["needLoop"] is false:
+            if "needLoop" in data and data["needLoop"] is False:
                 if "value" not in data:
                     raise SolisCloudControlApiError("Read failed: 'value' missing")
                 return data['value']
