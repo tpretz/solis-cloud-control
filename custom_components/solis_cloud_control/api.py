@@ -117,9 +117,10 @@ class SolisCloudControlApiClient:
         fetch_payload = { "orderId": data["msg"] }
         count=0
         while count < 10:
+            await asyncio.sleep(1)
             count += 1
 
-            fetch = await self._request(date, FETCH_ENDPOINT, fetch_payload)
+            data = await self._request(date, FETCH_ENDPOINT, fetch_payload)
             if data is None:
                 raise SolisCloudControlApiError("Read failed: 'data' field is missing in response")
 
@@ -127,11 +128,10 @@ class SolisCloudControlApiClient:
                 if "value" not in data:
                     raise SolisCloudControlApiError("Read failed: 'value' missing")
                 return data['value']
-            await asyncio.sleep(1)
 
 
 
-        raise SolisCloudControlApiError("unexpected error")
+        raise SolisCloudControlApiError("Too many loops waiting for result data")
 
     @backoff.on_exception(
         backoff.constant,
