@@ -1,5 +1,7 @@
 # Solis Cloud Control API Integration
 
+> Note: This fork is for minimal testing, only base read and write services are enabled
+
 This is very initial version of the Solis Cloud Control API integration for Home Assistant.
 It allows you to read and control various settings of your Solis inverter.
 Doesn't support sensors, switches, or other entities yet - only basic read and control actions crafted for automations.
@@ -36,98 +38,6 @@ Storage Mode
 action: solis_cloud_control.read
 data:
   cid: 636
-```
-
-Charge Time Slot 1
-
-```yaml
-action: solis_cloud_control.read
-data:
-  cid: 5946
-```
-
-Charge Time Slot 1 Current
-
-```yaml
-action: solis_cloud_control.read
-data:
-  cid: 5948
-```
-
-Charge Time Slot 1 Battery SOC
-
-```yaml
-action: solis_cloud_control.read
-data:
-  cid: 5928
-```
-
-Discharge Time Slot 1
-
-```yaml
-action: solis_cloud_control.read
-data:
-  cid: 5964
-```
-
-Discharge Time Slot 1 Current
-
-```yaml
-action: solis_cloud_control.read
-data:
-  cid: 5967
-```
-
-Discharge Time Slot 1 Battery SOC
-
-```yaml
-action: solis_cloud_control.read
-data:
-  cid: 5965
-```
-
-## High-level inverter control
-
-Set Self-Use Mode - Battery Reserve On, Grid Charging Off:
-
-```yaml
-action: solis_cloud_control.set_storage_mode
-data:
-  storage_mode: Self Use
-  battery_reserve: "ON"
-  allow_grid_charging: "OFF"
-```
-
-Set charge time slot:
-
-```yaml
-action: solis_cloud_control.set_charge_time_slot
-data:
-  time_slot: "11:00-13:00"
-  current: "90"
-  battery_soc: "80"
-```
-
-Set discharge time slot:
-
-```yaml
-action: solis_cloud_control.set_discharge_time_slot
-data:
-  time_slot: "11:00-13:00"
-  current: "90"
-  battery_soc: "80"
-```
-
-Disable charge time slot:
-
-```yaml
-action: solis_cloud_control.disable_charge_time_slot
-```
-
-Disable discharge time slot:
-
-```yaml
-action: solis_cloud_control.disable_discharge_time_slot
 ```
 
 ## Low-level inverter control
