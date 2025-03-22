@@ -15,8 +15,8 @@ from .const import (
     CONTROL_ENDPOINT,
     LOGGER,
     READ_ENDPOINT,
+    FETCH_ENDPOINT,
 )
-
 
 class SolisCloudControlApiError(Exception):
     def __init__(
@@ -114,7 +114,25 @@ class SolisCloudControlApiClient:
         if "msg" not in data:
             raise SolisCloudControlApiError("Read failed: 'msg' field is missing in response")
 
-        return data["msg"]
+        fetch_payload = { orderId: data["msg"] }
+        count=0
+        while count < 10:
+            count += 1
+            await asyncio.sleep(5)
+
+            fetch = await self._request(date, FETCH_ENDPOINT, fetch_payload)
+            if data is None:
+                raise SolisCloudControlApiError("Read failed: 'data' field is missing in response")
+            if len(data) is not 1:
+                raise SolisCloudControlApiError("Read failed: 'data' unexpected length")
+
+            if "value" not in data[0]
+                raise SolisCloudControlApiError("Read failed: 'value' missing")
+            return data[0]['value']
+
+
+
+        raise SolisCloudControlApiError("unexpected error")
 
     @backoff.on_exception(
         backoff.constant,

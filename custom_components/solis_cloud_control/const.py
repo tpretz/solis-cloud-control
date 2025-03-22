@@ -58,6 +58,7 @@ DISABLE_DISCHARGE_SLOT1_SERVICE_NAME = "disable_discharge_slot1"
 
 API_BASE_URL = "https://www.soliscloud.com:13333"
 READ_ENDPOINT = "/v2/api/atRead"
+FETCH_ENDPOINT = "/v2/api/result"
 CONTROL_ENDPOINT = "/v2/api/control"
 API_TIMEOUT_SECONDS = 10
 API_RETRY_COUNT = 3  # Initial attempt + 2 retries
