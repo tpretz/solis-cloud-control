@@ -122,8 +122,6 @@ class SolisCloudControlApiClient:
             fetch = await self._request(date, FETCH_ENDPOINT, fetch_payload)
             if data is None:
                 raise SolisCloudControlApiError("Read failed: 'data' field is missing in response")
-            if len(data) is not 1:
-                raise SolisCloudControlApiError("Read failed: 'data' unexpected length")
 
             if "needLoop" in data and data["needLoop"] is false:
                 if "value" not in data:
