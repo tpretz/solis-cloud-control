@@ -12,7 +12,9 @@ from .const import (
     CONTROL_SERVICE_NAME,
     CONTROL_SERVICE_SCHEMA,
     DISABLE_CHARGE_SLOT1_SERVICE_NAME,
+    DISABLE_CHARGE_SLOT1_SERVICE_SCHEMA,
     DISABLE_DISCHARGE_SLOT1_SERVICE_NAME,
+    DISABLE_DISCHARGE_SLOT1_SERVICE_SCHEMA,
     DISCHARGE_SLOT1_CURRENT_CID,
     DISCHARGE_SLOT1_SOC_CID,
     DISCHARGE_SLOT1_TIME_CID,
@@ -37,25 +39,33 @@ from .const import (
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     conf = config.get(DOMAIN, {})
 
-    api_key = conf.get(CONF_API_KEY)
-    api_token = conf.get(CONF_TOKEN)
-    inverter_sn = conf.get(CONF_INVERTER_SN)
+    clients = {}
 
-    if not api_key:
-        LOGGER.error("Missing required configuration entry: %s", CONF_API_KEY)
-        return False
-    if not api_token:
-        LOGGER.error("Missing required configuration entry: %s", CONF_TOKEN)
-        return False
-    if not inverter_sn:
-        LOGGER.error("Missing required configuration entry: %s", CONF_INVERTER_SN)
-        return False
+    for k, v in conf.items():
+        LOGGER.debug("Configuration entry: %s=%s", k, v)
 
-    session = aiohttp_client.async_get_clientsession(hass)
+        api_key = v.get(CONF_API_KEY)
+        api_token = v.get(CONF_TOKEN)
+        inverter_sn = v.get(CONF_INVERTER_SN)
 
-    client = SolisCloudControlApiClient(api_key, api_token, inverter_sn, session)
+        if not api_key:
+            LOGGER.error("Missing required configuration entry: %s", CONF_API_KEY)
+            return False
+        if not api_token:
+            LOGGER.error("Missing required configuration entry: %s", CONF_TOKEN)
+            return False
+        if not inverter_sn:
+            LOGGER.error("Missing required configuration entry: %s", CONF_INVERTER_SN)
+            return False
+
+        session = aiohttp_client.async_get_clientsession(hass)
+        clients[k] = SolisCloudControlApiClient(api_key, api_token, inverter_sn, session)
+
 
     async def async_service_read(call: ServiceCall) -> ServiceResponse:
+        client = clients.get(call.data.get("client"))
+        if client is None:
+            raise HomeAssistantError("Client not found")
         cid = call.data.get("cid")
         try:
             result = await client.read(cid)
@@ -65,6 +75,9 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
             raise HomeAssistantError(str(err)) from err
 
     async def async_service_control(call: ServiceCall) -> None:
+        client = clients.get(call.data.get("client"))
+        if client is None:
+            raise HomeAssistantError("Client not found")
         cid = call.data.get("cid")
         value = call.data.get("value")
         try:
@@ -74,6 +87,9 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
             raise HomeAssistantError(str(err)) from err
 
     async def async_service_set_storage_mode(call: ServiceCall) -> ServiceResponse:
+        client = clients.get(call.data.get("client"))
+        if client is None:
+            raise HomeAssistantError("Client not found")
         storage_mode = call.data.get("storage_mode", "Self Use")
         battery_reserve = call.data.get("battery_reserve", "ON")
         allow_grid_charging = call.data.get("allow_grid_charging", "OFF")
@@ -107,6 +123,9 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
             raise HomeAssistantError(str(err)) from err
 
     async def async_service_set_charge_slot1(call: ServiceCall) -> ServiceResponse:
+        client = clients.get(call.data.get("client"))
+        if client is None:
+            raise HomeAssistantError("Client not found")
         from_time = call.data.get("from_time")
         to_time = call.data.get("to_time")
         current = call.data.get("current")
@@ -139,6 +158,9 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
             raise HomeAssistantError(str(err)) from err
 
     async def async_service_set_discharge_slot1(call: ServiceCall) -> ServiceResponse:
+        client = clients.get(call.data.get("client"))
+        if client is None:
+            raise HomeAssistantError("Client not found")
         from_time = call.data.get("from_time")
         to_time = call.data.get("to_time")
         current = call.data.get("current")
@@ -171,6 +193,9 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
             raise HomeAssistantError(str(err)) from err
 
     async def async_service_disable_charge_slot1(call: ServiceCall) -> None:  # noqa: ARG001
+        client = clients.get(call.data.get("client"))
+        if client is None:
+            raise HomeAssistantError("Client not found")
         try:
             LOGGER.info("Disabling charge slot 1")
             await client.control(CHARGE_SLOT1_TIME_CID, "00:00-00:00")
@@ -178,6 +203,9 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
             raise HomeAssistantError(str(err)) from err
 
     async def async_service_disable_discharge_slot1(call: ServiceCall) -> None:  # noqa: ARG001
+        client = clients.get(call.data.get("client"))
+        if client is None:
+            raise HomeAssistantError("Client not found")
         try:
             LOGGER.info("Disabling discharge slot 1")
             await client.control(DISCHARGE_SLOT1_TIME_CID, "00:00-00:00")
@@ -224,12 +252,14 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
         DISABLE_CHARGE_SLOT1_SERVICE_NAME,
         async_service_disable_charge_slot1,
         supports_response=SupportsResponse.NONE,
+        schema=DISABLE_CHARGE_SLOT1_SERVICE_SCHEMA,
     )
     hass.services.async_register(
         DOMAIN,
         DISABLE_DISCHARGE_SLOT1_SERVICE_NAME,
         async_service_disable_discharge_slot1,
         supports_response=SupportsResponse.NONE,
+        schema=DISABLE_DISCHARGE_SLOT1_SERVICE_SCHEMA,
     )
 
     return True

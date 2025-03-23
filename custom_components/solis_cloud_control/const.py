@@ -12,6 +12,7 @@ CONF_INVERTER_SN = "inverter_sn"
 READ_SERVICE_NAME = "read"
 READ_SERVICE_SCHEMA = vol.Schema(
     {
+        vol.Required("client"): cv.string,
         vol.Required("cid"): cv.positive_int,
     }
 )
@@ -19,6 +20,7 @@ READ_SERVICE_SCHEMA = vol.Schema(
 CONTROL_SERVICE_NAME = "control"
 CONTROL_SERVICE_SCHEMA = vol.Schema(
     {
+        vol.Required("client"): cv.string,
         vol.Required("cid"): cv.positive_int,
         vol.Required("value"): cv.string,
     }
@@ -27,6 +29,7 @@ CONTROL_SERVICE_SCHEMA = vol.Schema(
 SET_STORAGE_MODE_SERVICE_NAME = "set_storage_mode"
 SET_STORAGE_MODE_SERVICE_SCHEMA = vol.Schema(
     {
+        vol.Required("client"): cv.string,
         vol.Required("storage_mode"): vol.In(["Self Use", "Feed In Priority"]),
         vol.Optional("battery_reserve", default="ON"): vol.In(["ON", "OFF"]),
         vol.Optional("allow_grid_charging", default="OFF"): vol.In(["ON", "OFF"]),
@@ -36,6 +39,7 @@ SET_STORAGE_MODE_SERVICE_SCHEMA = vol.Schema(
 SET_CHARGE_SLOT1_SERVICE_NAME = "set_charge_slot1"
 SET_CHARGE_SLOT1_SERVICE_SCHEMA = vol.Schema(
     {
+        vol.Required("client"): cv.string,
         vol.Required("from_time"): cv.time,
         vol.Required("to_time"): cv.time,
         vol.Optional("current"): vol.All(vol.Coerce(int), vol.Range(min=0, max=200)),
@@ -46,6 +50,7 @@ SET_CHARGE_SLOT1_SERVICE_SCHEMA = vol.Schema(
 SET_DISCHARGE_SLOT1_SERVICE_NAME = "set_discharge_slot1"
 SET_DISCHARGE_SLOT1_SERVICE_SCHEMA = vol.Schema(
     {
+        vol.Required("client"): cv.string,
         vol.Required("from_time"): cv.time,
         vol.Required("to_time"): cv.time,
         vol.Optional("current"): vol.Coerce(int),
@@ -54,7 +59,17 @@ SET_DISCHARGE_SLOT1_SERVICE_SCHEMA = vol.Schema(
 )
 
 DISABLE_CHARGE_SLOT1_SERVICE_NAME = "disable_charge_slot1"
+DISABLE_CHARGE_SLOT1_SERVICE_SCHEMA = vol.Schema(
+    {
+        vol.Required("client"): cv.string,
+    }
+)
 DISABLE_DISCHARGE_SLOT1_SERVICE_NAME = "disable_discharge_slot1"
+DISABLE_DISCHARGE_SLOT1_SERVICE_SCHEMA = vol.Schema(
+    {
+        vol.Required("client"): cv.string,
+    }
+)
 
 API_BASE_URL = "https://www.soliscloud.com:13333"
 READ_ENDPOINT = "/v2/api/atRead"
