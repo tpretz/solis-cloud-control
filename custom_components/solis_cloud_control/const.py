@@ -58,11 +58,13 @@ DISABLE_DISCHARGE_SLOT1_SERVICE_NAME = "disable_discharge_slot1"
 
 API_BASE_URL = "https://www.soliscloud.com:13333"
 READ_ENDPOINT = "/v2/api/atRead"
-FETCH_ENDPOINT = "/v2/api/result"
+RESULT_ENDPOINT = "/v2/api/result"
 CONTROL_ENDPOINT = "/v2/api/control"
 API_TIMEOUT_SECONDS = 10
 API_RETRY_COUNT = 3  # Initial attempt + 2 retries
 API_RETRY_DELAY_SECONDS = 5  # Delay between retries
+API_RESULT_ATTEMPTS = 10  # Number of attempts to fetch result data
+API_RESULT_DELAY_SECONDS = 0.6  # Delay between result data fetch attempts
 
 STORAGE_MODE_CID = 636
 STORAGE_MODE_BIT_SELF_USE = 0

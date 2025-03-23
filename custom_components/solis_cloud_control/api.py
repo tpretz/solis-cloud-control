@@ -12,10 +12,12 @@ from .const import (
     API_RETRY_COUNT,
     API_RETRY_DELAY_SECONDS,
     API_TIMEOUT_SECONDS,
+    API_RESULT_ATTEMPTS,
+    API_RESULT_DELAY_SECONDS,
     CONTROL_ENDPOINT,
     LOGGER,
     READ_ENDPOINT,
-    FETCH_ENDPOINT,
+    RESULT_ENDPOINT,
 )
 
 class SolisCloudControlApiError(Exception):
@@ -113,23 +115,22 @@ class SolisCloudControlApiClient:
 
         if "msg" not in data:
             raise SolisCloudControlApiError("Read failed: 'msg' field is missing in response")
+        
+        if not data.get("needLoop", False):
+            return data["msg"]
 
         fetch_payload = { "orderId": data["msg"] }
-        count=0
-        while count < 10:
-            await asyncio.sleep(1)
-            count += 1
+        for count in range(API_RESULT_ATTEMPTS):
+            await asyncio.sleep(API_RESULT_DELAY_SECONDS)
 
-            data = await self._request(date, FETCH_ENDPOINT, fetch_payload)
+            data = await self._request(date, RESULT_ENDPOINT, fetch_payload)
             if data is None:
                 raise SolisCloudControlApiError("Read failed: 'data' field is missing in response")
 
-            if "needLoop" in data and data["needLoop"] is False:
+            if not data.get("needLoop", False):
                 if "value" not in data:
                     raise SolisCloudControlApiError("Read failed: 'value' missing")
                 return data['value']
-
-
 
         raise SolisCloudControlApiError("Too many loops waiting for result data")
 
