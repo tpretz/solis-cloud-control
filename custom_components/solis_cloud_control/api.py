@@ -118,6 +118,10 @@ class SolisCloudControlApiClient:
         
         if not data.get("needLoop", False):
             return data["msg"]
+        
+        # check that order id is a number, errors have been seen to appear here with no other indication
+        if not data["msg"].isdigit():
+            raise SolisCloudControlApiError(f"Read failed: 'msg' field is not a number: {data['msg']}")
 
         fetch_payload = { "orderId": data["msg"] }
         for count in range(API_RESULT_ATTEMPTS):
