@@ -1,6 +1,9 @@
 read:
   description: "Read data from the SolisCloud API for a specific CID."
   fields:
+    client:
+      description: "The configured inverter client name to target"
+      example: "home"
     cid:
       description: "The CID to read data for."
       example: 636
@@ -12,6 +15,9 @@ read:
 control:
   description: "Send a control command to the SolisCloud API for a specific CID."
   fields:
+    client:
+      description: "The configured inverter client name to target"
+      example: "home"
     cid:
       description: "The CID to control."
       example: 636
@@ -22,6 +28,9 @@ control:
 set_storage_mode:
   description: "Set the storage mode of the inverter with specific parameters."
   fields:
+    client:
+      description: "The configured inverter client name to target"
+      example: "home"
     storage_mode:
       description: "The storage mode to set."
       default: "Self Use"
@@ -57,6 +66,9 @@ set_storage_mode:
 set_charge_slot1:
   description: "Set the charge time slot 1 parameters for the inverter."
   fields:
+    client:
+      description: "The configured inverter client name to target"
+      example: "home"
     from_time:
       description: "The start time."
       example: "11:00:00"
@@ -98,6 +110,9 @@ set_charge_slot1:
 set_discharge_slot1:
   description: "Set the discharge time slot 1 parameters for the inverter."
   fields:
+    client:
+      description: "The configured inverter client name to target"
+      example: "home"
     from_time:
       description: "The start time."
       example: "11:00:00"
@@ -138,6 +153,14 @@ set_discharge_slot1:
 
 disable_charge_slot1:
   description: "Disable charge time slot 1 by setting the time range to 00:00-00:00."
+  fields:
+    client:
+      description: "The configured inverter client name to target"
+      example: "home"
 
 disable_discharge_slot1:
   description: "Disable discharge time slot 1 by setting the time range to 00:00-00:00."
+  fields:
+    client:
+      description: "The configured inverter client name to target"
+      example: "home"
