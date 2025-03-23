@@ -121,6 +121,8 @@ class SolisCloudControlApiClient:
         
         # check that order id is a number, errors have been seen to appear here with no other indication
         if not data["msg"].isdigit():
+            if data["msg"].startswith("ERROR!2101010"):
+                raise Exception("Read failed: API allowance error") # this is a special case, we want to raise a different exception with no retries
             raise SolisCloudControlApiError(f"Read failed: 'msg' field is not a number: {data['msg']}")
 
         fetch_payload = { "orderId": data["msg"] }
